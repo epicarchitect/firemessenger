@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FireMessenger</string>
+    <string name="profile">Профиль</string>
+    <string name="messages">Сообщения</string>
+</resources>
