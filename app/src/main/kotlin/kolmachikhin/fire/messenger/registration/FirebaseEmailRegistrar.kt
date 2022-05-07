@@ -1,4 +1,4 @@
-package kolmachikhin.fire.messenger.repository
+package kolmachikhin.fire.messenger.registration
 
 import com.google.firebase.auth.FirebaseAuth
 import kolmachikhin.fire.messenger.registration.EmailRegistrar

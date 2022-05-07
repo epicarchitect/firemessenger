@@ -1,7 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+rootProject.name = "FireMessenger"
+include(":app")
 include(":domain")
-
 
 pluginManagement {
     repositories {
@@ -18,6 +19,3 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-
-rootProject.name = "FireMessenger"
-include(":app")

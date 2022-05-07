@@ -4,9 +4,8 @@ import android.app.Application
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kolmachikhin.fire.messenger.repository.AuthorizationRepository
 import kolmachikhin.fire.messenger.registration.EmailRegistrar
-import kolmachikhin.fire.messenger.repository.FirebaseEmailRegistrar
+import kolmachikhin.fire.messenger.registration.FirebaseEmailRegistrar
 import kolmachikhin.fire.messenger.repository.UserMessagesRepository
 import kolmachikhin.fire.messenger.repository.UserRepository
 import kolmachikhin.fire.messenger.validation.EmailValidator
@@ -37,8 +36,7 @@ class FireMessengerApp : Application() {
                     single { Firebase.database }
                     single { UserRepository(CoroutineScope(Dispatchers.IO), get(), get()) }
                     single { UserMessagesRepository() }
-                    single { AuthorizationRepository(get()) }
-                    single<EmailRegistrar> { FirebaseEmailRegistrar(get())}
+                    single<EmailRegistrar> { FirebaseEmailRegistrar(get()) }
                     factory { EmailValidator() }
                     factory { PasswordValidator(minPasswordLength = 6) }
                     viewModel { ProfileViewModel(get()) }
