@@ -5,13 +5,16 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kolmachikhin.fire.messenger.repository.AuthorizationRepository
-import kolmachikhin.fire.messenger.repository.RegistrationRepository
+import kolmachikhin.fire.messenger.registration.EmailRegistrar
+import kolmachikhin.fire.messenger.repository.FirebaseEmailRegistrar
 import kolmachikhin.fire.messenger.repository.UserMessagesRepository
 import kolmachikhin.fire.messenger.repository.UserRepository
+import kolmachikhin.fire.messenger.validation.EmailValidator
+import kolmachikhin.fire.messenger.validation.PasswordValidator
 import kolmachikhin.fire.messenger.viewmodel.LoginViewModel
 import kolmachikhin.fire.messenger.viewmodel.MessagesViewModel
 import kolmachikhin.fire.messenger.viewmodel.ProfileViewModel
-import kolmachikhin.fire.messenger.viewmodel.RegistrationViewModel
+import kolmachikhin.fire.messenger.viewmodel.EmailRegistrationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -35,10 +38,12 @@ class FireMessengerApp : Application() {
                     single { UserRepository(CoroutineScope(Dispatchers.IO), get(), get()) }
                     single { UserMessagesRepository() }
                     single { AuthorizationRepository(get()) }
-                    single { RegistrationRepository(get()) }
+                    single<EmailRegistrar> { FirebaseEmailRegistrar(get())}
+                    factory { EmailValidator() }
+                    factory { PasswordValidator(minPasswordLength = 6) }
                     viewModel { ProfileViewModel(get()) }
                     viewModel { MessagesViewModel() }
-                    viewModel { RegistrationViewModel(get()) }
+                    viewModel { EmailRegistrationViewModel(get(), get(), get()) }
                     viewModel { LoginViewModel() }
                 }
             )

@@ -1,18 +1,6 @@
 package kolmachikhin.fire.messenger.compose.screen
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import kolmachikhin.fire.messenger.R
 import kolmachikhin.fire.messenger.compose.koin.composeViewModel
 import kolmachikhin.fire.messenger.compose.theme.FireMessengerTheme
@@ -31,7 +19,7 @@ private val bottomTabs = listOf(
 @Composable
 fun App() {
     FireMessengerTheme {
-        Registration(registrationViewModel = composeViewModel())
+        Registration(emailRegistrationViewModel = composeViewModel())
 //        val navController = rememberNavController()
 //        Scaffold(
 //            bottomBar = {
