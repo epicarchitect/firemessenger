@@ -19,7 +19,7 @@ private val bottomTabs = listOf(
 @Composable
 fun App() {
     FireMessengerTheme {
-        Registration(emailRegistrationViewModel = composeViewModel())
+        EmailRegistration(emailRegistrationViewModel = composeViewModel())
 //        val navController = rememberNavController()
 //        Scaffold(
 //            bottomBar = {
