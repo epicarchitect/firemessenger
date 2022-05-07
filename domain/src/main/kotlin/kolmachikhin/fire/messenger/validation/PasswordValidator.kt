@@ -1,7 +1,7 @@
 package kolmachikhin.fire.messenger.validation
 
 class PasswordValidator(
-    val minPasswordLength: Int
+    private val minPasswordLength: Int
 ) {
 
     fun validate(value: String) = when {
@@ -9,13 +9,13 @@ class PasswordValidator(
             Incorrect(value, IncorrectReason.Empty())
         }
         value.length < minPasswordLength -> {
-            Incorrect(value, IncorrectReason.Short())
+            Incorrect(value, IncorrectReason.Short(minPasswordLength))
         }
         else -> Correct(value)
     }
 
     sealed class IncorrectReason {
         class Empty : IncorrectReason()
-        class Short : IncorrectReason()
+        class Short(val minPasswordLength: Int) : IncorrectReason()
     }
 }

@@ -1,5 +1,3 @@
-@file:OptIn(FlowPreview::class)
-
 package kolmachikhin.fire.messenger.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -9,7 +7,6 @@ import kolmachikhin.fire.messenger.validation.Correct
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.PasswordValidator
 import kolmachikhin.fire.messenger.validation.ValidationResult
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
