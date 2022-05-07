@@ -1,16 +1,22 @@
 package kolmachikhin.fire.messenger.registration
 
 import com.google.firebase.auth.FirebaseAuth
-import kolmachikhin.fire.messenger.registration.EmailRegistrar
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.database.FirebaseDatabase
+import kolmachikhin.fire.messenger.repository.User
+import kolmachikhin.fire.messenger.repository.toMap
 import kolmachikhin.fire.messenger.validation.Correct
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class FirebaseEmailRegistrar(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseDatabase: FirebaseDatabase
 ) : EmailRegistrar {
 
     override suspend fun register(
+        firstName: Correct<String>,
+        lastName: Correct<String>,
         email: Correct<String>,
         password: Correct<String>
     ) = suspendCoroutine<EmailRegistrar.Result> { continuation ->
@@ -19,10 +25,24 @@ class FirebaseEmailRegistrar(
             password.data
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                continuation.resume(EmailRegistrar.Result.Success())
+                firebaseDatabase.getReference("users").child(task.result.user!!.uid).setValue(
+                    User(
+                        id = task.result.user!!.uid,
+                        firstName = firstName.data,
+                        lastName = lastName.data,
+                        email = email.data
+                    ).toMap()
+                ) { _, _ ->
+                    continuation.resume(EmailRegistrar.Result.Success())
+                }
             } else {
                 task.exception?.printStackTrace()
-                continuation.resume(EmailRegistrar.Result.Failed())
+                continuation.resume(
+                    when (task.exception) {
+                        is FirebaseAuthUserCollisionException -> EmailRegistrar.Result.Failed.UserAlreadyExists()
+                        else -> EmailRegistrar.Result.Failed.Unknown()
+                    }
+                )
             }
         }
     }

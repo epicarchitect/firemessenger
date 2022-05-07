@@ -1,9 +1,11 @@
 package kolmachikhin.fire.messenger.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -12,7 +14,8 @@ import kotlinx.coroutines.flow.onEach
 class UserRepository(
     coroutineScope: CoroutineScope,
     private val firebaseAuth: FirebaseAuth,
-    firebaseDatabase: FirebaseDatabase
+    firebaseDatabase: FirebaseDatabase,
+    private val gson: Gson
 ) {
     private val userFirebaseReferenceState = MutableStateFlow<DatabaseReference?>(null)
     private val firebaseUserState = MutableStateFlow(firebaseAuth.currentUser)
@@ -26,14 +29,8 @@ class UserRepository(
 
     private val userFirebaseReferenceListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            mutableUserState.value = UserState.Loaded(
-                User(
-                    "test",
-                    "test123",
-                    123,
-                    "asd"
-                )
-            )
+            val json = gson.fromJson(snapshot.value.toString(), JsonObject::class.java)
+            mutableUserState.value = UserState.Loaded(json.toUser())
         }
 
         override fun onCancelled(error: DatabaseError) {}
@@ -45,6 +42,10 @@ class UserRepository(
         firebaseAuth.addAuthStateListener {
             userFirebaseReferenceState.value?.removeEventListener(userFirebaseReferenceListener)
             firebaseUserState.value = it.currentUser
+
+            if (it.currentUser == null) {
+                mutableUserState.value = UserState.NotAuthorized()
+            }
         }
 
         firebaseUserState.onEach {
@@ -56,14 +57,6 @@ class UserRepository(
         userFirebaseReferenceState.onEach {
             it?.addValueEventListener(userFirebaseReferenceListener)
         }.launchIn(coroutineScope)
-    }
-
-
-    fun register(email: String, ) {
-
-    }
-    fun signIn() {
-
     }
 
     fun signOut() {

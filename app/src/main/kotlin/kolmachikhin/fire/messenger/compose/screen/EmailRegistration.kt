@@ -3,8 +3,10 @@ package kolmachikhin.fire.messenger.compose.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -23,15 +25,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import kolmachikhin.fire.messenger.R
+import kolmachikhin.fire.messenger.registration.EmailRegistrar
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.Incorrect
 import kolmachikhin.fire.messenger.validation.PasswordValidator
 import kolmachikhin.fire.messenger.viewmodel.EmailRegistrationViewModel
 
 @Composable
-fun EmailRegistration(
-    emailRegistrationViewModel: EmailRegistrationViewModel
-) {
+fun EmailRegistration(emailRegistrationViewModel: EmailRegistrationViewModel) {
     val emailRegistrationState by emailRegistrationViewModel.state.collectAsState()
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -41,10 +42,14 @@ fun EmailRegistration(
     ) {
         when (val state = emailRegistrationState) {
             is EmailRegistrationViewModel.State.Input -> {
+                val isEmailIncorrect = state is EmailRegistrationViewModel.State.Input.Incorrect && state.validatedEmail is Incorrect
+                val isPasswordIncorrect = state is EmailRegistrationViewModel.State.Input.Incorrect && state.validatedPassword is Incorrect
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(54.dp)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 54.dp, vertical = 24.dp)
                 ) {
 
                     Image(
@@ -52,6 +57,7 @@ fun EmailRegistration(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
                         contentDescription = null
                     )
+
                     Text(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         text = stringResource(R.string.app_name),
@@ -59,13 +65,46 @@ fun EmailRegistration(
                         style = MaterialTheme.typography.h5
                     )
 
-                    val isEmailIncorrect = state is EmailRegistrationViewModel.State.Input.Incorrect && state.validatedEmail is Incorrect
-                    val isPasswordIncorrect = state is EmailRegistrationViewModel.State.Input.Incorrect && state.validatedPassword is Incorrect
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        value = state.firstName,
+                        onValueChange = {
+                            state.updateFirstName(it)
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(stringResource(R.string.firstName_input_label))
+                        },
+                        singleLine = true
+                    )
 
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 24.dp),
+                            .padding(top = 16.dp),
+                        value = state.lastName,
+                        onValueChange = {
+                            state.updateLastName(it)
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(stringResource(R.string.lastName_input_label))
+                        },
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
                         value = state.email,
                         onValueChange = {
                             state.updateEmail(it)
@@ -163,18 +202,31 @@ fun EmailRegistration(
                 }
             }
             is EmailRegistrationViewModel.State.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             is EmailRegistrationViewModel.State.RegistrationFailed -> {
-                Column {
-                    Text("Registration Failed")
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(54.dp)
+                ) {
+                    Text(
+                        text = when (state.result) {
+                            is EmailRegistrar.Result.Failed.UserAlreadyExists -> {
+                                stringResource(R.string.registration_error_user_already_exists)
+                            }
+                            is EmailRegistrar.Result.Failed.Unknown -> {
+                                stringResource(R.string.registration_error_unknown)
+                            }
+                        }
+                    )
                     Button(onClick = { state.retry() }) {
-                        Text("Retry")
+                        Text(stringResource(R.string.retry_registration_button))
                     }
                 }
             }
             is EmailRegistrationViewModel.State.RegistrationSuccess -> {
-                Text("Registration Success")
+                /* no-op */
             }
         }
     }

@@ -4,16 +4,14 @@ import android.app.Application
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import kolmachikhin.fire.messenger.registration.EmailRegistrar
 import kolmachikhin.fire.messenger.registration.FirebaseEmailRegistrar
 import kolmachikhin.fire.messenger.repository.UserMessagesRepository
 import kolmachikhin.fire.messenger.repository.UserRepository
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.PasswordValidator
-import kolmachikhin.fire.messenger.viewmodel.LoginViewModel
-import kolmachikhin.fire.messenger.viewmodel.MessagesViewModel
-import kolmachikhin.fire.messenger.viewmodel.ProfileViewModel
-import kolmachikhin.fire.messenger.viewmodel.EmailRegistrationViewModel
+import kolmachikhin.fire.messenger.viewmodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -34,15 +32,17 @@ class FireMessengerApp : Application() {
                 module {
                     single { Firebase.auth }
                     single { Firebase.database }
-                    single { UserRepository(CoroutineScope(Dispatchers.IO), get(), get()) }
+                    single { Gson() }
+                    single { UserRepository(CoroutineScope(Dispatchers.IO), get(), get(), get()) }
                     single { UserMessagesRepository() }
-                    single<EmailRegistrar> { FirebaseEmailRegistrar(get()) }
+                    single<EmailRegistrar> { FirebaseEmailRegistrar(get(), get()) }
                     factory { EmailValidator() }
                     factory { PasswordValidator(minPasswordLength = 6) }
                     viewModel { ProfileViewModel(get()) }
                     viewModel { MessagesViewModel() }
                     viewModel { EmailRegistrationViewModel(get(), get(), get()) }
                     viewModel { LoginViewModel() }
+                    viewModel { AppViewModel(get()) }
                 }
             )
         }

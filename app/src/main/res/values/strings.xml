@@ -2,11 +2,16 @@
     <string name="app_name">Fire Messenger</string>
     <string name="profile">Профиль</string>
     <string name="messages">Сообщения</string>
+    <string name="firstName_input_label">Имя</string>
+    <string name="lastName_input_label">Фамилия</string>
     <string name="email_input_label">E-mail</string>
     <string name="password_input_label">Пароль</string>
     <string name="incorrect_password_input_short">Пароль не может быть короче чем %d символов</string>
     <string name="incorrect_password_input_empty">Придумайте пароль</string>
     <string name="incorrect_email_input_empty">Введите вашу почту</string>
     <string name="incorrect_email_input_pattern">Не корректный формат</string>
+    <string name="registration_error_user_already_exists">Пользоатель с таким e-mail уже существует</string>
+    <string name="registration_error_unknown">Произошла ошибка</string>
+    <string name="retry_registration_button">Вернутся к регистрации</string>
     <string name="register_button">Зарегистрироваться</string>
 </resources>

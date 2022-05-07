@@ -1,14 +1,24 @@
 package kolmachikhin.fire.messenger.repository
 
-import android.util.Patterns
+import com.google.gson.JsonObject
 
 class User(
-    val firstMame: String,
+    val id: String,
+    val firstName: String,
     val lastName: String,
-    val birthdate: Long,
     val email: String
-) {
-    init {
-        Patterns.EMAIL_ADDRESS
-    }
+)
+
+fun User.toMap() = mutableMapOf<String, Any>().apply {
+    put("id", id)
+    put("firstName", firstName)
+    put("lastName", lastName)
+    put("email", email)
 }
+
+fun JsonObject.toUser() = User(
+    id = this["id"].asString,
+    firstName = this["firstName"].asString,
+    lastName = this["lastName"].asString,
+    email = this["email"].asString
+)
