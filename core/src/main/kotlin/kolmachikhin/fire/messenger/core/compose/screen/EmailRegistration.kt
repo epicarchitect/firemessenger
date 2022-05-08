@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import kolmachikhin.fire.messenger.core.R
-import kolmachikhin.fire.messenger.auth.EmailRegistrar
+import kolmachikhin.fire.messenger.auth.EmailRegistrationResult
 import kolmachikhin.fire.messenger.validation.*
 import kolmachikhin.fire.messenger.core.viewmodel.auth.EmailRegistrationState
 
@@ -214,14 +214,14 @@ fun EmailRegistration(state: EmailRegistrationState) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = when (val result = state.result) {
-                            is EmailRegistrar.Result.Failed.EmailAlreadyUsed -> {
+                        text = when (val result = state.failedResult) {
+                            is EmailRegistrationResult.Failed.EmailAlreadyUsed -> {
                                 stringResource(R.string.registration_error_email_already_used, result.email)
                             }
-                            is EmailRegistrar.Result.Failed.Unknown -> {
+                            is EmailRegistrationResult.Failed.Unknown -> {
                                 stringResource(R.string.registration_error_unknown)
                             }
-                            is EmailRegistrar.Result.Failed.ConnectionError -> {
+                            is EmailRegistrationResult.Failed.ConnectionError -> {
                                 stringResource(R.string.registration_error_connection)
                             }
                         }

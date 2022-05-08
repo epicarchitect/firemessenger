@@ -1,6 +1,7 @@
 package kolmachikhin.fire.messenger.core.viewmodel.auth
 
 import kolmachikhin.fire.messenger.auth.EmailRegistrar
+import kolmachikhin.fire.messenger.auth.EmailRegistrationResult
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.NicknameValidator
 import kolmachikhin.fire.messenger.validation.PasswordValidator
@@ -43,7 +44,7 @@ sealed class EmailRegistrationState {
     class RegistrationSuccess : EmailRegistrationState()
 
     class RegistrationFailed(
-        val result: EmailRegistrar.Result.Failed,
+        val failedResult: EmailRegistrationResult.Failed,
         val retry: () -> Unit
     ) : EmailRegistrationState()
 }

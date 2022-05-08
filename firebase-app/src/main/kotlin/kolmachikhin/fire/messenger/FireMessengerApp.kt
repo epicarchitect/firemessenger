@@ -5,15 +5,19 @@ import kolmachikhin.fire.messenger.auth.EmailAuthorizer
 import kolmachikhin.fire.messenger.auth.EmailRegistrar
 import kolmachikhin.fire.messenger.auth.FirebaseEmailAuthorizer
 import kolmachikhin.fire.messenger.auth.FirebaseEmailRegistrar
-import kolmachikhin.fire.messenger.repository.FirebaseUserRepository
-import kolmachikhin.fire.messenger.repository.UserRepository
+import kolmachikhin.fire.messenger.repository.FirebaseCurrentUserRepository
+import kolmachikhin.fire.messenger.repository.CurrentUserRepository
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.NicknameValidator
 import kolmachikhin.fire.messenger.validation.PasswordValidator
 import kolmachikhin.fire.messenger.core.viewmodel.app.AppViewModel
 import kolmachikhin.fire.messenger.core.viewmodel.auth.EmailAuthorizationViewModel
 import kolmachikhin.fire.messenger.core.viewmodel.auth.EmailRegistrationViewModel
+import kolmachikhin.fire.messenger.core.viewmodel.chats.ChatsViewModel
 import kolmachikhin.fire.messenger.core.viewmodel.profile.ProfileViewModel
+import kolmachikhin.fire.messenger.core.viewmodel.search.SearchViewModel
+import kolmachikhin.fire.messenger.repository.FirebaseUsersRepository
+import kolmachikhin.fire.messenger.repository.UsersRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -29,7 +33,8 @@ class FireMessengerApp : Application() {
             androidContext(this@FireMessengerApp)
             modules(
                 module(createdAtStart = true) {
-                    single<UserRepository> { FirebaseUserRepository() }
+                    single<CurrentUserRepository> { FirebaseCurrentUserRepository() }
+                    single<UsersRepository> { FirebaseUsersRepository() }
                 },
                 module {
                     factory<EmailAuthorizer> { FirebaseEmailAuthorizer() }
@@ -38,10 +43,12 @@ class FireMessengerApp : Application() {
                     factory { PasswordValidator(minPasswordLength = 6) }
                     factory { EmailValidator() }
 
+                    viewModel { ChatsViewModel(get()) }
                     viewModel { ProfileViewModel(get()) }
                     viewModel { EmailRegistrationViewModel(get(), get(), get(), get()) }
                     viewModel { EmailAuthorizationViewModel(get(), get(), get()) }
                     viewModel { AppViewModel(get()) }
+                    viewModel { SearchViewModel(get()) }
                 }
             )
         }

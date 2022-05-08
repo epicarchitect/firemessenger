@@ -11,13 +11,13 @@ import kolmachikhin.fire.messenger.validation.Correct
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseEmailRegistrar : EmailRegistrar() {
+class FirebaseEmailRegistrar : EmailRegistrar {
 
     override suspend fun register(
         nickname: Correct<String>,
         email: Correct<String>,
         password: Correct<String>
-    ) = suspendCoroutine<Result> { continuation ->
+    ) = suspendCoroutine<EmailRegistrationResult> { continuation ->
         Firebase.auth.createUserWithEmailAndPassword(
             email.data,
             password.data
@@ -32,15 +32,15 @@ class FirebaseEmailRegistrar : EmailRegistrar() {
                             email = email.data
                         ).toMap()
                     ) { _, _ ->
-                        continuation.resume(Result.Success())
+                        continuation.resume(EmailRegistrationResult.Success())
                     }
             } else {
                 task.exception?.printStackTrace()
                 continuation.resume(
                     when (task.exception) {
-                        is FirebaseAuthUserCollisionException -> Result.Failed.EmailAlreadyUsed(email.data)
-                        is FirebaseNetworkException -> Result.Failed.ConnectionError()
-                        else -> Result.Failed.Unknown()
+                        is FirebaseAuthUserCollisionException -> EmailRegistrationResult.Failed.EmailAlreadyUsed(email.data)
+                        is FirebaseNetworkException -> EmailRegistrationResult.Failed.ConnectionError()
+                        else -> EmailRegistrationResult.Failed.Unknown()
                     }
                 )
             }

@@ -1,5 +1,6 @@
 package kolmachikhin.fire.messenger.core.viewmodel.auth
 
+import kolmachikhin.fire.messenger.auth.EmailAuthorizationResult
 import kolmachikhin.fire.messenger.auth.EmailAuthorizer
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.PasswordValidator
@@ -35,7 +36,7 @@ sealed class EmailAuthorizationState {
     class AuthorizationSuccess : EmailAuthorizationState()
 
     class AuthorizationFailed(
-        val result: EmailAuthorizer.Result.Failed,
+        val failedResult: EmailAuthorizationResult.Failed,
         val retry: () -> Unit
     ) : EmailAuthorizationState()
 }

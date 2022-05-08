@@ -1,7 +1,7 @@
 package kolmachikhin.fire.messenger.core.viewmodel.app
 
-import kolmachikhin.fire.messenger.repository.UserRepository
+import kolmachikhin.fire.messenger.repository.CurrentUserState
 
 data class AppState(
-    val userState: UserRepository.State
+    val currentUserState: CurrentUserState
 )

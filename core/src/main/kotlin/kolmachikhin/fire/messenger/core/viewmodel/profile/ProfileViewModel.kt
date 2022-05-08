@@ -2,28 +2,29 @@ package kolmachikhin.fire.messenger.core.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kolmachikhin.fire.messenger.repository.UserRepository
+import kolmachikhin.fire.messenger.repository.CurrentUserRepository
+import kolmachikhin.fire.messenger.repository.CurrentUserState
 import kolmachikhin.fire.messenger.validation.Correct
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(userRepository: UserRepository) : ViewModel() {
+class ProfileViewModel(currentUserRepository: CurrentUserRepository) : ViewModel() {
 
-    val state = userRepository.state.map {
+    val state = currentUserRepository.state.map {
         when (it) {
-            is UserRepository.State.Loaded -> ProfileState.Loaded(
+            is CurrentUserState.Loaded -> ProfileState.Loaded(
                 nickname = it.user.nickname,
                 email = it.user.email,
                 updateNickname = { nickname ->
                     viewModelScope.launch {
-                        userRepository.updateNickname(Correct(nickname))
+                        currentUserRepository.updateNickname(Correct(nickname))
                     }
                 },
                 signOut = {
                     viewModelScope.launch {
-                        userRepository.signOut()
+                        currentUserRepository.signOut()
                     }
                 }
             )

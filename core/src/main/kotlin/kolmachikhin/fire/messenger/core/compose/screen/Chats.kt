@@ -1,6 +1,5 @@
 package kolmachikhin.fire.messenger.core.compose.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -8,17 +7,18 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kolmachikhin.fire.messenger.core.R
+import kolmachikhin.fire.messenger.core.viewmodel.chats.ChatsState
 
 @Composable
 fun Chats(
-    navigateToProfile: () -> Unit
+    state: ChatsState,
+    navigateToProfile: () -> Unit,
+    navigateToSearch: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -34,26 +34,31 @@ fun Chats(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.ic_launcher),
-                        contentDescription = null
-                    )
+                    IconButton(
+                        onClick = navigateToProfile
+                    ) {
+                        Icon(Icons.Default.Person, null)
+                    }
 
                     Text(
                         modifier = Modifier.padding(8.dp),
-                        text = stringResource(R.string.app_name),
+                        text = if (state is ChatsState.Loaded) {
+                            state.nickname
+                        } else {
+                            ""
+                        },
                         style = MaterialTheme.typography.h6
                     )
                 }
 
                 IconButton(
-                    onClick = navigateToProfile
+                    onClick = {
+                        navigateToSearch()
+                    }
                 ) {
-                    Icon(Icons.Default.Person, null)
+                    Icon(Icons.Default.Search, null)
                 }
             }
-
         }
     }
 }

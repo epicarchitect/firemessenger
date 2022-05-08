@@ -20,34 +20,32 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseUserRepository : UserRepository() {
+class FirebaseCurrentUserRepository : CurrentUserRepository {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-    private val gson = Gson()
     private val firebaseUserState = MutableStateFlow<FirebaseUser?>(null)
     private val userFirebaseReferenceState = MutableStateFlow<DatabaseReference?>(null)
-    private val mutableUserState = MutableStateFlow<State>(State.Loading())
+    private val mutableState = MutableStateFlow<CurrentUserState>(CurrentUserState.Loading())
     private val userFirebaseReferenceListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             try {
-                val json = gson.fromJson(snapshot.value.toString(), JsonObject::class.java)
-                mutableUserState.value = State.Loaded(json.toUser())
+                mutableState.value = CurrentUserState.Loaded(snapshot.toUser())
             } catch (t: Throwable) {
                 Firebase.auth.signOut()
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            mutableUserState.value = when (error.code) {
-                DatabaseError.DISCONNECTED -> State.LoadingError.Disconnected()
-                DatabaseError.UNAVAILABLE -> State.LoadingError.ServiceUnavailable()
-                DatabaseError.PERMISSION_DENIED -> State.LoadingError.PermissionDenied()
-                else -> State.LoadingError.Unknown()
+            mutableState.value = when (error.code) {
+                DatabaseError.DISCONNECTED -> CurrentUserState.LoadingError.Disconnected()
+                DatabaseError.UNAVAILABLE -> CurrentUserState.LoadingError.ServiceUnavailable()
+                DatabaseError.PERMISSION_DENIED -> CurrentUserState.LoadingError.PermissionDenied()
+                else -> CurrentUserState.LoadingError.Unknown()
             }
         }
     }
 
-    override val state = mutableUserState
+    override val state = mutableState
 
     init {
         Firebase.auth.addAuthStateListener {
@@ -55,7 +53,7 @@ class FirebaseUserRepository : UserRepository() {
             firebaseUserState.value = it.currentUser
 
             if (it.currentUser == null) {
-                mutableUserState.value = State.NotAuthorized()
+                mutableState.value = CurrentUserState.NotAuthorized()
             }
         }
 

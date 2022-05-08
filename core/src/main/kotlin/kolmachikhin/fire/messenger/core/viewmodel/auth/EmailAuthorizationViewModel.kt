@@ -2,6 +2,7 @@ package kolmachikhin.fire.messenger.core.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kolmachikhin.fire.messenger.auth.EmailAuthorizationResult
 import kolmachikhin.fire.messenger.auth.EmailAuthorizer
 import kolmachikhin.fire.messenger.validation.*
 import kotlinx.coroutines.flow.*
@@ -38,10 +39,10 @@ class EmailAuthorizationViewModel(
             }
             is AuthorizationState.Executed -> {
                 when (authorization.result) {
-                    is EmailAuthorizer.Result.Success -> {
+                    is EmailAuthorizationResult.Success -> {
                         EmailAuthorizationState.AuthorizationSuccess()
                     }
-                    is EmailAuthorizer.Result.Failed -> {
+                    is EmailAuthorizationResult.Failed -> {
                         EmailAuthorizationState.AuthorizationFailed(
                             authorization.result,
                             retry = {
@@ -85,6 +86,6 @@ class EmailAuthorizationViewModel(
 
     private sealed class AuthorizationState {
         class Executing : AuthorizationState()
-        class Executed(val result: EmailAuthorizer.Result) : AuthorizationState()
+        class Executed(val result: EmailAuthorizationResult) : AuthorizationState()
     }
 }

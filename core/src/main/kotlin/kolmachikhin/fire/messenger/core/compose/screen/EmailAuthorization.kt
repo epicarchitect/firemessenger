@@ -24,8 +24,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import kolmachikhin.fire.messenger.auth.EmailAuthorizationResult
 import kolmachikhin.fire.messenger.core.R
-import kolmachikhin.fire.messenger.auth.EmailAuthorizer
 import kolmachikhin.fire.messenger.validation.EmailValidator
 import kolmachikhin.fire.messenger.validation.Incorrect
 import kolmachikhin.fire.messenger.validation.PasswordValidator
@@ -192,11 +192,11 @@ fun EmailAuthorization(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = when (state.result) {
-                            is EmailAuthorizer.Result.Failed.Unknown -> {
+                        text = when (state.failedResult) {
+                            is EmailAuthorizationResult.Failed.Unknown -> {
                                 stringResource(R.string.registration_error_unknown)
                             }
-                            is EmailAuthorizer.Result.Failed.ConnectionError -> {
+                            is EmailAuthorizationResult.Failed.ConnectionError -> {
                                 stringResource(R.string.registration_error_connection)
                             }
                         }

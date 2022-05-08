@@ -11,11 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kolmachikhin.fire.messenger.core.R
 import kolmachikhin.fire.messenger.core.compose.ext.composeViewModel
-import kolmachikhin.fire.messenger.repository.UserRepository
+import kolmachikhin.fire.messenger.repository.CurrentUserRepository
 import kolmachikhin.fire.messenger.core.viewmodel.app.AppState
 import kolmachikhin.fire.messenger.core.viewmodel.auth.EmailAuthorizationViewModel
 import kolmachikhin.fire.messenger.core.viewmodel.auth.EmailRegistrationViewModel
+import kolmachikhin.fire.messenger.core.viewmodel.chats.ChatsViewModel
 import kolmachikhin.fire.messenger.core.viewmodel.profile.ProfileViewModel
+import kolmachikhin.fire.messenger.core.viewmodel.search.SearchViewModel
+import kolmachikhin.fire.messenger.repository.CurrentUserState
 
 @Composable
 fun App(state: AppState) {
@@ -23,16 +26,21 @@ fun App(state: AppState) {
 
     NavHost(
         navController = navController,
-        startDestination = when (state.userState) {
-            is UserRepository.State.Loaded -> "chats"
-            is UserRepository.State.NotAuthorized -> "authorization"
+        startDestination = when (state.currentUserState) {
+            is CurrentUserState.Loaded -> "chats"
+            is CurrentUserState.NotAuthorized -> "authorization"
             else -> "loading"
         }
     ) {
         composable("chats") {
+            val state by composeViewModel<ChatsViewModel>().state.collectAsState()
             Chats(
+                state = state,
                 navigateToProfile = {
                     navController.navigate("profile")
+                },
+                navigateToSearch = {
+                    navController.navigate("search")
                 }
             )
         }
@@ -44,6 +52,11 @@ fun App(state: AppState) {
 
         composable("loading") {
             Loading(stringResource(R.string.loading))
+        }
+
+        composable("search") {
+            val state by composeViewModel<SearchViewModel>().state.collectAsState()
+            Search(state)
         }
 
         composable("authorization") {

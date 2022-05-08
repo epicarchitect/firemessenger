@@ -5,6 +5,7 @@ package kolmachikhin.fire.messenger.core.viewmodel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kolmachikhin.fire.messenger.auth.EmailRegistrar
+import kolmachikhin.fire.messenger.auth.EmailRegistrationResult
 import kolmachikhin.fire.messenger.validation.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -55,10 +56,10 @@ class EmailRegistrationViewModel(
             }
             is RegistrationState.Executed -> {
                 when (registration.result) {
-                    is EmailRegistrar.Result.Success -> {
+                    is EmailRegistrationResult.Success -> {
                         EmailRegistrationState.RegistrationSuccess()
                     }
-                    is EmailRegistrar.Result.Failed -> {
+                    is EmailRegistrationResult.Failed -> {
                         EmailRegistrationState.RegistrationFailed(
                             registration.result,
                             retry = {
@@ -111,6 +112,6 @@ class EmailRegistrationViewModel(
 
     private sealed class RegistrationState {
         class Executing : RegistrationState()
-        class Executed(val result: EmailRegistrar.Result) : RegistrationState()
+        class Executed(val result: EmailRegistrationResult) : RegistrationState()
     }
 }

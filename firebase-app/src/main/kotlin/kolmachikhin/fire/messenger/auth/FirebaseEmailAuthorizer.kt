@@ -7,24 +7,24 @@ import kolmachikhin.fire.messenger.validation.Correct
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseEmailAuthorizer : EmailAuthorizer() {
+class FirebaseEmailAuthorizer : EmailAuthorizer {
 
     override suspend fun authorize(
         email: Correct<String>,
         password: Correct<String>
-    ) = suspendCoroutine<Result> { continuation ->
+    ) = suspendCoroutine<EmailAuthorizationResult> { continuation ->
         Firebase.auth.signInWithEmailAndPassword(
             email.data,
             password.data
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                continuation.resume(Result.Success())
+                continuation.resume(EmailAuthorizationResult.Success())
             } else {
                 task.exception?.printStackTrace()
                 continuation.resume(
                     when (task.exception) {
-                        is FirebaseNetworkException -> Result.Failed.ConnectionError()
-                        else -> Result.Failed.Unknown()
+                        is FirebaseNetworkException -> EmailAuthorizationResult.Failed.ConnectionError()
+                        else -> EmailAuthorizationResult.Failed.Unknown()
                     }
                 )
             }

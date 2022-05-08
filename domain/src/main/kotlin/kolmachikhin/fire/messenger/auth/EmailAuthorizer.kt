@@ -2,18 +2,11 @@ package kolmachikhin.fire.messenger.auth
 
 import kolmachikhin.fire.messenger.validation.Correct
 
-abstract class EmailAuthorizer {
+interface EmailAuthorizer {
 
-    abstract suspend fun authorize(
+    suspend fun authorize(
         email: Correct<String>,
         password: Correct<String>
-    ): Result
+    ): EmailAuthorizationResult
 
-    sealed class Result {
-        class Success : Result()
-        sealed class Failed : Result() {
-            class ConnectionError : Failed()
-            class Unknown : Failed()
-        }
-    }
 }
