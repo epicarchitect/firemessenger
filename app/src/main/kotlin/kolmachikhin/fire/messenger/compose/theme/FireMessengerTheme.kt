@@ -21,7 +21,7 @@ fun lightColors() = materialLightColors(
 @Composable
 fun FireMessengerTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colors = if (false) darkColors() else lightColors(),
+        colors = if (isSystemInDarkTheme()) darkColors() else lightColors(),
         content = content
     )
 }
