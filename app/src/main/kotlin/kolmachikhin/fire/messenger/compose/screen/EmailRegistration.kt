@@ -230,7 +230,7 @@ fun EmailRegistration(emailRegistrationViewModel: EmailRegistrationViewModel) {
                             .padding(start = 54.dp, end = 54.dp, top = 16.dp),
                         onClick = {
                             (state as? EmailRegistrationViewModel.State.Input.Correct)?.startRegistration?.invoke()
-                                  },
+                        },
                         enabled = state is EmailRegistrationViewModel.State.Input.Correct
                     ) {
                         Text(stringResource(R.string.register_button))
