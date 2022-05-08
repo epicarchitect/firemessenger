@@ -14,7 +14,7 @@ abstract class EmailRegistrar {
         class Success : Result()
         sealed class Failed : Result() {
             class EmailAlreadyUsed(val email: String) : Failed()
-            class ConnectionError() : Failed()
+            class ConnectionError : Failed()
             class Unknown : Failed()
         }
     }

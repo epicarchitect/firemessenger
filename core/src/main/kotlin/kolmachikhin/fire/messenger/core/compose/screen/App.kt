@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package kolmachikhin.fire.messenger.core.compose.screen
 
 import androidx.compose.runtime.Composable

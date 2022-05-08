@@ -1,7 +1,6 @@
 package kolmachikhin.fire.messenger.auth
 
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kolmachikhin.fire.messenger.validation.Correct
