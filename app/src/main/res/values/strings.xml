@@ -2,7 +2,7 @@
     <string name="app_name">Fire Messenger</string>
     <string name="profile">Профиль</string>
     <string name="messages">Сообщения</string>
-    <string name="firstName_input_label">Имя</string>
+    <string name="nickname_input_label">Никнейм</string>
     <string name="lastName_input_label">Фамилия</string>
     <string name="email_input_label">E-mail</string>
     <string name="password_input_label">Пароль</string>

@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":firebase-domain")
+
+
 rootProject.name = "FireMessenger"
 include(":app")
 include(":domain")

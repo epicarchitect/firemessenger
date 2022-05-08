@@ -3,15 +3,13 @@ package kolmachikhin.fire.messenger.activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Button
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import kolmachikhin.fire.messenger.compose.koin.composeViewModel
-import kolmachikhin.fire.messenger.compose.screen.App
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import kolmachikhin.fire.messenger.compose.ext.composeViewModel
+import kolmachikhin.fire.messenger.compose.screen.app.App
 import kolmachikhin.fire.messenger.compose.theme.FireMessengerTheme
+import kolmachikhin.fire.messenger.viewmodel.app.AppViewModel
 
 class FireMessengerActivity : AppCompatActivity() {
 
@@ -20,9 +18,8 @@ class FireMessengerActivity : AppCompatActivity() {
         setContent {
             FireMessengerTheme {
                 Surface {
-                    App(
-                        appViewModel = composeViewModel()
-                    )
+                    val state by composeViewModel<AppViewModel>().state.collectAsState()
+                    App(state)
                 }
             }
         }
