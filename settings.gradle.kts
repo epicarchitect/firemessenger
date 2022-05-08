@@ -1,11 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":firebase-domain")
-
-
 rootProject.name = "FireMessenger"
-include(":app")
 include(":domain")
+include(":core")
+include(":firebase-app")
 
 pluginManagement {
     repositories {

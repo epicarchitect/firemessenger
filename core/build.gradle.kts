@@ -18,6 +18,14 @@ android {
         }
     }
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.1"
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -29,5 +37,13 @@ android {
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    api(project(":domain"))
+    api("androidx.core:core-ktx:1.7.0")
+    api("androidx.appcompat:appcompat:1.4.1")
+    api("androidx.activity:activity-compose:1.4.0")
+    api("androidx.compose.material:material:1.1.1")
+    api("androidx.compose.material:material-icons-extended:1.1.1")
+    api("androidx.navigation:navigation-compose:2.4.2")
+    api("io.insert-koin:koin-core:3.1.4")
+    api("io.insert-koin:koin-android:3.1.4")
 }
