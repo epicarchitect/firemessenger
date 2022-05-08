@@ -1,12 +1,11 @@
-package kolmachikhin.fire.messenger.registration
+package kolmachikhin.fire.messenger.authorization
 
 import kolmachikhin.fire.messenger.validation.Correct
 
-interface EmailRegistrar {
+interface EmailAuthorizer {
 
-    suspend fun register(
-        firstName: Correct<String>,
-        lastName: Correct<String>,
+
+    suspend fun authorize(
         email: Correct<String>,
         password: Correct<String>
     ): Result
@@ -14,7 +13,7 @@ interface EmailRegistrar {
     sealed class Result {
         class Success : Result()
         sealed class Failed : Result() {
-            class UserAlreadyExists : Failed()
+            class ConnectionError() : Failed()
             class Unknown : Failed()
         }
     }

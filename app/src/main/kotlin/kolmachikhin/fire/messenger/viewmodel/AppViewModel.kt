@@ -1,6 +1,5 @@
 package kolmachikhin.fire.messenger.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kolmachikhin.fire.messenger.repository.UserRepository
@@ -13,27 +12,14 @@ class AppViewModel(
 ) : ViewModel() {
 
     val state = userRepository.userState.map {
-        when (it) {
-            is UserRepository.UserState.Authorizing -> {
-                State("loading")
-            }
-            is UserRepository.UserState.Loaded -> {
-                State("main")
-            }
-            is UserRepository.UserState.Loading -> {
-                State("loading")
-            }
-            is UserRepository.UserState.NotAuthorized -> {
-                State("email_registration")
-            }
-        }
+        State(userState = it)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
-        State("loading")
+        State(userRepository.userState.value)
     )
 
     class State(
-        val currentScreen: String
+        val userState: UserRepository.UserState
     )
 }

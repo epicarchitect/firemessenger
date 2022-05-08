@@ -4,16 +4,15 @@ package kolmachikhin.fire.messenger.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kolmachikhin.fire.messenger.registration.EmailRegistrar
-import kolmachikhin.fire.messenger.validation.Correct
-import kolmachikhin.fire.messenger.validation.EmailValidator
-import kolmachikhin.fire.messenger.validation.PasswordValidator
-import kolmachikhin.fire.messenger.validation.ValidationResult
+import kolmachikhin.fire.messenger.authorization.EmailRegistrar
+import kolmachikhin.fire.messenger.validation.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class EmailRegistrationViewModel(
     private val registrar: EmailRegistrar,
+    private val firstNameValidator: FirstNameValidator,
+    private val lastNameValidator: LastNameValidator,
     private val emailValidator: EmailValidator,
     private val passwordValidator: PasswordValidator
 ) : ViewModel() {
@@ -23,6 +22,14 @@ class EmailRegistrationViewModel(
     private val emailState = MutableStateFlow<String?>(null)
     private val passwordState = MutableStateFlow<String?>(null)
     private val registrationState = MutableStateFlow<RegistrationState?>(null)
+
+    private val validatedFirstNameState = firstNameState.map {
+        it?.let(firstNameValidator::validate)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+    private val validatedLastNameState = lastNameState.map {
+        it?.let(lastNameValidator::validate)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     private val validatedEmailState = emailState.map {
         it?.let(emailValidator::validate)
@@ -37,6 +44,8 @@ class EmailRegistrationViewModel(
         lastNameState,
         emailState,
         passwordState,
+        validatedFirstNameState,
+        validatedLastNameState,
         validatedEmailState,
         validatedPasswordState,
         registrationState
@@ -45,10 +54,12 @@ class EmailRegistrationViewModel(
         val lastName = it[1] as? String
         val email = it[2] as? String
         val password = it[3] as? String
-        val validatedEmail = it[4] as? ValidationResult<String, EmailValidator.IncorrectReason>
-        val validatedPassword = it[5] as? ValidationResult<String, PasswordValidator.IncorrectReason>
+        val validatedFirstName = it[4] as? Validated<String, FirstNameValidator.IncorrectReason>
+        val validatedLastName = it[5] as? Validated<String, LastNameValidator.IncorrectReason>
+        val validatedEmail = it[6] as? Validated<String, EmailValidator.IncorrectReason>
+        val validatedPassword = it[7] as? Validated<String, PasswordValidator.IncorrectReason>
 
-        when (val registration = it[6] as? RegistrationState) {
+        when (val registration = it[8] as? RegistrationState) {
             is RegistrationState.Executing -> {
                 State.Loading()
             }
@@ -67,10 +78,15 @@ class EmailRegistrationViewModel(
                     }
                 }
             }
-            else -> if (validatedEmail is Correct && validatedPassword is Correct) {
+            else -> if (
+                validatedFirstName is Correct &&
+                validatedLastName is Correct &&
+                validatedEmail is Correct &&
+                validatedPassword is Correct
+            ) {
                 State.Input.Correct(
-                    firstName = firstName ?: "",
-                    lastName = lastName ?: "",
+                    firstName = validatedFirstName.data,
+                    lastName = validatedLastName.data,
                     email = validatedEmail.data,
                     password = validatedPassword.data,
                     updateFirstName = { firstNameState.value = it },
@@ -82,8 +98,8 @@ class EmailRegistrationViewModel(
                         viewModelScope.launch {
                             registrationState.value = RegistrationState.Executed(
                                 registrar.register(
-                                    Correct(firstName!!),
-                                    Correct(lastName!!),
+                                    validatedFirstName,
+                                    validatedLastName,
                                     validatedEmail,
                                     validatedPassword
                                 )
@@ -97,6 +113,8 @@ class EmailRegistrationViewModel(
                     lastName = lastName ?: "",
                     email = email ?: "",
                     password = password ?: "",
+                    validatedFirstName = validatedFirstName,
+                    validatedLastName = validatedLastName,
                     validatedEmail = validatedEmail,
                     validatedPassword = validatedPassword,
                     updateFirstName = { firstNameState.value = it },
@@ -146,8 +164,10 @@ class EmailRegistrationViewModel(
                 override val updateLastName: (String) -> Unit,
                 override val updateEmail: (String) -> Unit,
                 override val updatePassword: (String) -> Unit,
-                val validatedEmail: ValidationResult<String, EmailValidator.IncorrectReason>?,
-                val validatedPassword: ValidationResult<String, PasswordValidator.IncorrectReason>?
+                val validatedFirstName: Validated<String, FirstNameValidator.IncorrectReason>?,
+                val validatedLastName: Validated<String, LastNameValidator.IncorrectReason>?,
+                val validatedEmail: Validated<String, EmailValidator.IncorrectReason>?,
+                val validatedPassword: Validated<String, PasswordValidator.IncorrectReason>?
             ) : Input()
         }
 
@@ -159,7 +179,7 @@ class EmailRegistrationViewModel(
         ) : State()
     }
 
-    sealed class RegistrationState {
+    private sealed class RegistrationState {
         class Executing : RegistrationState()
         class Executed(val result: EmailRegistrar.Result) : RegistrationState()
     }

@@ -1,5 +1,6 @@
-package kolmachikhin.fire.messenger.registration
+package kolmachikhin.fire.messenger.authorization
 
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.database.FirebaseDatabase
@@ -39,7 +40,8 @@ class FirebaseEmailRegistrar(
                 task.exception?.printStackTrace()
                 continuation.resume(
                     when (task.exception) {
-                        is FirebaseAuthUserCollisionException -> EmailRegistrar.Result.Failed.UserAlreadyExists()
+                        is FirebaseAuthUserCollisionException -> EmailRegistrar.Result.Failed.EmailAlreadyUsed(email.data)
+                        is FirebaseNetworkException -> EmailRegistrar.Result.Failed.ConnectionError()
                         else -> EmailRegistrar.Result.Failed.Unknown()
                     }
                 )
