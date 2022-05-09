@@ -2,8 +2,8 @@
 
 rootProject.name = "FireMessenger"
 include(":domain")
-include(":core")
-include(":firebase-app")
+include(":android-core")
+include(":firebase-android-app")
 
 pluginManagement {
     repositories {
