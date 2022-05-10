@@ -1,9 +1,7 @@
-@file:Suppress("UnstableApiUsage")
-
 rootProject.name = "FireMessenger"
-include(":domain")
-include(":presentation")
-include(":firebase-app")
+include("domain")
+include("presentation")
+include("firebase-app")
 
 pluginManagement {
     repositories {
@@ -13,6 +11,7 @@ pluginManagement {
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

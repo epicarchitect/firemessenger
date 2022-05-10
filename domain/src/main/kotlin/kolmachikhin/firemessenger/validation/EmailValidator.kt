@@ -1,7 +1,5 @@
 package kolmachikhin.firemessenger.validation
 
-import android.util.Patterns
-
 class EmailValidator {
 
     fun validate(value: String) = when {
@@ -20,6 +18,6 @@ class EmailValidator {
     }
 
     companion object {
-        private val EMAIL_REGEX = Patterns.EMAIL_ADDRESS.toRegex()
+        private val EMAIL_REGEX =  "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+".toRegex()
     }
 }
