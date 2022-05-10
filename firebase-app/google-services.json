@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "570316117893",
+    "firebase_url": "https://kolmachikhin-fire-messenger-default-rtdb.firebaseio.com",
+    "project_id": "kolmachikhin-fire-messenger",
+    "storage_bucket": "kolmachikhin-fire-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570316117893:android:86daaaa167acbadabf56ec",
+        "android_client_info": {
+          "package_name": "kolmachikhin.firemessenger.firebaseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570316117893-clqmcks21f9c6iefvkigllve0oud7v5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlj0jaUf33626q7JMEX_n9KKe_jxN2-Sk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570316117893-clqmcks21f9c6iefvkigllve0oud7v5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

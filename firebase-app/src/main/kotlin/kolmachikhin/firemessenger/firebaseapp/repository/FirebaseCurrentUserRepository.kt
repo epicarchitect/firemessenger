@@ -1,0 +1,83 @@
+package kolmachikhin.firemessenger.firebaseapp.repository
+
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import kolmachikhin.firemessenger.firebaseapp.mapper.toUser
+import kolmachikhin.firemessenger.repository.CurrentUserRepository
+import kolmachikhin.firemessenger.repository.CurrentUserState
+import kolmachikhin.firemessenger.validation.Correct
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
+class FirebaseCurrentUserRepository : CurrentUserRepository {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private val firebaseUserState = MutableStateFlow<FirebaseUser?>(null)
+    private val userFirebaseReferenceState = MutableStateFlow<DatabaseReference?>(null)
+    private val mutableState = MutableStateFlow<CurrentUserState>(CurrentUserState.Loading())
+    private val userFirebaseReferenceListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            try {
+                mutableState.value = CurrentUserState.Loaded(snapshot.toUser())
+            } catch (t: Throwable) {
+                Firebase.auth.signOut()
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            mutableState.value = when (error.code) {
+                DatabaseError.DISCONNECTED -> CurrentUserState.LoadingError.Disconnected()
+                DatabaseError.UNAVAILABLE -> CurrentUserState.LoadingError.ServiceUnavailable()
+                DatabaseError.PERMISSION_DENIED -> CurrentUserState.LoadingError.PermissionDenied()
+                else -> CurrentUserState.LoadingError.Unknown()
+            }
+        }
+    }
+
+    override val state = mutableState
+
+    init {
+        Firebase.auth.addAuthStateListener {
+            userFirebaseReferenceState.value?.removeEventListener(userFirebaseReferenceListener)
+            firebaseUserState.value = it.currentUser
+
+            if (it.currentUser == null) {
+                mutableState.value = CurrentUserState.NotAuthorized()
+            }
+        }
+
+        firebaseUserState.onEach {
+            userFirebaseReferenceState.value = it?.let { user ->
+                Firebase.database.getReference("users").child(user.uid)
+            }
+        }.launchIn(coroutineScope)
+
+        userFirebaseReferenceState.onEach {
+            it?.addValueEventListener(userFirebaseReferenceListener)
+        }.launchIn(coroutineScope)
+    }
+
+    override suspend fun updateNickname(nickname: Correct<String>) = suspendCoroutine<Unit> { continuation ->
+        Firebase.database.getReference("users")
+            .child(Firebase.auth.currentUser!!.uid)
+            .child("nickname")
+            .setValue(nickname.data) { _, _ ->
+                continuation.resume(Unit)
+            }
+    }
+
+    override suspend fun signOut() {
+        Firebase.auth.signOut()
+    }
+}
