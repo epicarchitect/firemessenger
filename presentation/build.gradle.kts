@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace = "kolmachikhin.firemessenger.presentation"
     compileSdk = 31
 
     defaultConfig {
@@ -44,6 +45,6 @@ dependencies {
     api("androidx.compose.material:material:1.1.1")
     api("androidx.compose.material:material-icons-extended:1.1.1")
     api("androidx.navigation:navigation-compose:2.4.2")
-    api("io.insert-koin:koin-core:3.1.4")
-    api("io.insert-koin:koin-android:3.1.4")
+    api("io.insert-koin:koin-core:3.2.0")
+    api("io.insert-koin:koin-android:3.2.0")
 }

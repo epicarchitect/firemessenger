@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace = "kolmachikhin.firemessenger.firebaseapp"
     compileSdk = 31
 
     defaultConfig {
@@ -34,7 +35,7 @@ android {
 
 dependencies {
     implementation(project(":presentation"))
-    implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
+    implementation(platform("com.google.firebase:firebase-bom:30.0.0"))
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.code.gson:gson:2.9.0")

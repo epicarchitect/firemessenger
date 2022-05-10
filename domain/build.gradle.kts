@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace = "kolmachikhin.firemessenger"
     compileSdk = 31
 
     defaultConfig {
