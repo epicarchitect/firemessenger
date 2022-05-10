@@ -9,7 +9,7 @@ import kolmachikhin.firemessenger.presentation.viewmodel.search.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-fun viewModelsModule() = module {
+val viewModels = module {
     viewModel { ChatsViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
     viewModel { EmailRegistrationViewModel(get(), get(), get(), get()) }

@@ -6,7 +6,7 @@ import kolmachikhin.firemessenger.repository.CurrentUserRepository
 import kolmachikhin.firemessenger.repository.UsersRepository
 import org.koin.dsl.module
 
-fun singletonsModule() =  module(createdAtStart = true) {
+val singletons = module(createdAtStart = true) {
     single<CurrentUserRepository> { FirebaseCurrentUserRepository() }
     single<UsersRepository> { FirebaseUsersRepository() }
 }

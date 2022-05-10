@@ -1,9 +1,9 @@
 package kolmachikhin.firemessenger.firebaseapp
 
 import android.app.Application
-import kolmachikhin.firemessenger.firebaseapp.di.factoriesModule
-import kolmachikhin.firemessenger.firebaseapp.di.singletonsModule
-import kolmachikhin.firemessenger.presentation.di.viewModelsModule
+import kolmachikhin.firemessenger.firebaseapp.di.factories
+import kolmachikhin.firemessenger.firebaseapp.di.singletons
+import kolmachikhin.firemessenger.presentation.di.viewModels
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -16,11 +16,7 @@ class FireMessengerApp : Application() {
         startKoin {
             androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(this@FireMessengerApp)
-            modules(
-                singletonsModule(),
-                factoriesModule(),
-                viewModelsModule()
-            )
+            modules(singletons, factories, viewModels)
         }
     }
 }

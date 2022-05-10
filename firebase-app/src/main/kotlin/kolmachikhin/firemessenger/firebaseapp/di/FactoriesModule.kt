@@ -9,7 +9,7 @@ import kolmachikhin.firemessenger.validation.NicknameValidator
 import kolmachikhin.firemessenger.validation.PasswordValidator
 import org.koin.dsl.module
 
-fun factoriesModule() = module {
+val factories = module {
     factory<EmailAuthorizer> { FirebaseEmailAuthorizer() }
     factory<EmailRegistrar> { FirebaseEmailRegistrar() }
     factory { NicknameValidator(maxNicknameLength = 25, minNicknameLength = 3) }
