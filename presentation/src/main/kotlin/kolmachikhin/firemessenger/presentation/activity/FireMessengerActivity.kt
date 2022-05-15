@@ -17,10 +17,8 @@ class FireMessengerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             FireMessengerTheme {
-                Surface {
-                    val state by composeViewModel<AppViewModel>().state.collectAsState()
-                    App(state)
-                }
+                val state by composeViewModel<AppViewModel>().state.collectAsState()
+                App(state)
             }
         }
     }

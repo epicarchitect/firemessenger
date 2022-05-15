@@ -24,10 +24,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import kolmachikhin.alexander.validation.Incorrect
 import kolmachikhin.firemessenger.auth.EmailAuthorizationResult
 import kolmachikhin.firemessenger.presentation.R
 import kolmachikhin.firemessenger.validation.EmailValidator
-import kolmachikhin.firemessenger.validation.Incorrect
 import kolmachikhin.firemessenger.validation.PasswordValidator
 import kolmachikhin.firemessenger.presentation.viewmodel.auth.EmailAuthorizationState
 

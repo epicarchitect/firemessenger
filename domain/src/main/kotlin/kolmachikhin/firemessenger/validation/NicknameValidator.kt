@@ -1,21 +1,17 @@
 package kolmachikhin.firemessenger.validation
 
+import kolmachikhin.alexander.validation.Validator
+
 class NicknameValidator(
     private val maxNicknameLength: Int,
     private val minNicknameLength: Int
-) {
+) : Validator<String, NicknameValidator.IncorrectReason>() {
 
-    fun validate(value: String) = when {
-        value.isEmpty() -> {
-            Incorrect(value, IncorrectReason.Empty())
-        }
-        value.length < minNicknameLength -> {
-            Incorrect(value, IncorrectReason.TooShort(minNicknameLength))
-        }
-        value.length > maxNicknameLength -> {
-            Incorrect(value, IncorrectReason.TooLong(maxNicknameLength))
-        }
-        else -> Correct(value)
+    override suspend fun String.incorrectReason() = when {
+        isEmpty() -> IncorrectReason.Empty()
+        length < minNicknameLength -> IncorrectReason.TooShort(minNicknameLength)
+        length > maxNicknameLength -> IncorrectReason.TooLong(maxNicknameLength)
+        else -> null
     }
 
     sealed class IncorrectReason {

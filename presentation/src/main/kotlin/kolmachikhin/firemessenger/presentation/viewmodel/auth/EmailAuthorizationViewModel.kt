@@ -2,31 +2,33 @@ package kolmachikhin.firemessenger.presentation.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.firemessenger.auth.EmailAuthorizationResult
 import kolmachikhin.firemessenger.auth.EmailAuthorizer
-import kolmachikhin.firemessenger.validation.Correct
+import kolmachikhin.firemessenger.presentation.viewmodel.validateNullableWith
 import kolmachikhin.firemessenger.validation.EmailValidator
 import kolmachikhin.firemessenger.validation.PasswordValidator
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class EmailAuthorizationViewModel(
     private val authorizer: EmailAuthorizer,
-    private val emailValidator: EmailValidator,
-    private val passwordValidator: PasswordValidator
+    emailValidator: EmailValidator,
+    passwordValidator: PasswordValidator
 ) : ViewModel() {
 
     private val emailState = MutableStateFlow<String?>(null)
     private val passwordState = MutableStateFlow<String?>(null)
     private val authorizationState = MutableStateFlow<AuthorizationState?>(null)
 
-    private val validatedEmailState = emailState.map {
-        it?.let(emailValidator::validate)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    private val validatedEmailState = emailState.validateNullableWith(emailValidator)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    private val validatedPasswordState = passwordState.map {
-        it?.let(passwordValidator::validate)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    private val validatedPasswordState = passwordState.validateNullableWith(passwordValidator)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     val state = combine(
         emailState,

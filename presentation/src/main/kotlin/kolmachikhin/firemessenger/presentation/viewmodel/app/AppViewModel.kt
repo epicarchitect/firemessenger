@@ -2,19 +2,19 @@ package kolmachikhin.firemessenger.presentation.viewmodel.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kolmachikhin.firemessenger.repository.CurrentUserRepository
+import kolmachikhin.firemessenger.repository.MyUserRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class AppViewModel(currentUserRepository: CurrentUserRepository) : ViewModel() {
+class AppViewModel(myUserRepository: MyUserRepository) : ViewModel() {
 
-    val state = currentUserRepository.state.map {
-        AppState(currentUserState = it)
+    val state = myUserRepository.state.map {
+        AppState(myUserState = it)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
-        AppState(currentUserRepository.state.value)
+        AppState(myUserRepository.state.value)
     )
 
 }

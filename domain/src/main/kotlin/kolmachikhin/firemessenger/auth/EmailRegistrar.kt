@@ -1,6 +1,6 @@
 package kolmachikhin.firemessenger.auth
 
-import kolmachikhin.firemessenger.validation.Correct
+import kolmachikhin.alexander.validation.Correct
 
 interface EmailRegistrar {
 

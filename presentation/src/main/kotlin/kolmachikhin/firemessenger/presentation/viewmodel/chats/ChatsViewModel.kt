@@ -2,19 +2,19 @@ package kolmachikhin.firemessenger.presentation.viewmodel.chats
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kolmachikhin.firemessenger.repository.CurrentUserRepository
-import kolmachikhin.firemessenger.repository.CurrentUserState
+import kolmachikhin.firemessenger.repository.MyUserRepository
+import kolmachikhin.firemessenger.repository.MyUserState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class ChatsViewModel(
-    currentUserRepository: CurrentUserRepository
+    myUserRepository: MyUserRepository
 ) : ViewModel() {
 
-    val state = currentUserRepository.state.map {
+    val state = myUserRepository.state.map {
         when (it) {
-            is CurrentUserState.Loaded -> ChatsState.Loaded(it.user.nickname)
+            is MyUserState.Loaded -> ChatsState.Loaded(it.user.nickname)
             else -> ChatsState.Loading()
         }
     }.stateIn(

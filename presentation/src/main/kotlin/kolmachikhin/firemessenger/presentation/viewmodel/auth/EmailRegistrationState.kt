@@ -1,10 +1,10 @@
 package kolmachikhin.firemessenger.presentation.viewmodel.auth
 
+import kolmachikhin.alexander.validation.Validated
 import kolmachikhin.firemessenger.auth.EmailRegistrationResult
 import kolmachikhin.firemessenger.validation.EmailValidator
 import kolmachikhin.firemessenger.validation.NicknameValidator
 import kolmachikhin.firemessenger.validation.PasswordValidator
-import kolmachikhin.firemessenger.validation.Validated
 
 sealed class EmailRegistrationState {
     class Loading : EmailRegistrationState()

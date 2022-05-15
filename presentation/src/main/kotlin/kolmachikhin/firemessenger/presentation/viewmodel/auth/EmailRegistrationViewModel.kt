@@ -2,18 +2,25 @@ package kolmachikhin.firemessenger.presentation.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kolmachikhin.alexander.validation.Correct
+import kolmachikhin.alexander.validation.Validated
 import kolmachikhin.firemessenger.auth.EmailRegistrar
 import kolmachikhin.firemessenger.auth.EmailRegistrationResult
-import kolmachikhin.firemessenger.validation.*
-import kolmachikhin.firemessenger.validation.*
-import kotlinx.coroutines.flow.*
+import kolmachikhin.firemessenger.presentation.viewmodel.validateNullableWith
+import kolmachikhin.firemessenger.validation.EmailValidator
+import kolmachikhin.firemessenger.validation.NicknameValidator
+import kolmachikhin.firemessenger.validation.PasswordValidator
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class EmailRegistrationViewModel(
     private val registrar: EmailRegistrar,
-    private val nicknameValidator: NicknameValidator,
-    private val emailValidator: EmailValidator,
-    private val passwordValidator: PasswordValidator
+    nicknameValidator: NicknameValidator,
+    emailValidator: EmailValidator,
+    passwordValidator: PasswordValidator
 ) : ViewModel() {
 
     private val nicknameState = MutableStateFlow<String?>(null)
@@ -21,17 +28,14 @@ class EmailRegistrationViewModel(
     private val passwordState = MutableStateFlow<String?>(null)
     private val registrationState = MutableStateFlow<RegistrationState?>(null)
 
-    private val validatedNicknameState = nicknameState.map {
-        it?.let(nicknameValidator::validate)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    private val validatedNicknameState = nicknameState.validateNullableWith(nicknameValidator)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    private val validatedEmailState = emailState.map {
-        it?.let(emailValidator::validate)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    private val validatedEmailState = emailState.validateNullableWith(emailValidator)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
-    private val validatedPasswordState = passwordState.map {
-        it?.let(passwordValidator::validate)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    private val validatedPasswordState = passwordState.validateNullableWith(passwordValidator)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 
     @Suppress("UNCHECKED_CAST")
     val state = combine(

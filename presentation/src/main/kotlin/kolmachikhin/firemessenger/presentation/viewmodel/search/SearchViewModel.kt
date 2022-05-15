@@ -2,20 +2,24 @@ package kolmachikhin.firemessenger.presentation.viewmodel.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kolmachikhin.firemessenger.repository.MyUserRepository
+import kolmachikhin.firemessenger.repository.MyUserState
 import kolmachikhin.firemessenger.repository.UsersRepository
 import kolmachikhin.firemessenger.repository.UsersState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 
 class SearchViewModel(
+    myUserRepository: MyUserRepository,
     usersRepository: UsersRepository
 ) : ViewModel() {
 
     private val searchTextState = MutableStateFlow("")
 
-    val state = combine(usersRepository.state, searchTextState) { usersState, searchText ->
+    val state = combine(
+        usersRepository.state,
+        searchTextState,
+        myUserRepository.state.filterIsInstance<MyUserState.Loaded>().map { it.user }
+    ) { usersState, searchText, currentUser ->
         when (usersState) {
             is UsersState.Loaded -> SearchState.Loaded(
                 searchText = searchText,
@@ -24,8 +28,8 @@ class SearchViewModel(
                 },
                 users = usersState.users.let {
                     if (searchText.isEmpty()) it
-                    else it.filter { it.nickname.contains(searchText, ignoreCase = true) }
-                }
+                    else it.filter { it.nickname.contains(searchText, true) }
+                }.filter { it.id != currentUser.id }
             )
             is UsersState.Loading -> SearchState.Loading()
         }

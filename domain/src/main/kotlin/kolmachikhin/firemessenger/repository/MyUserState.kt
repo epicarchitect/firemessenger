@@ -2,12 +2,12 @@ package kolmachikhin.firemessenger.repository
 
 import kolmachikhin.firemessenger.data.UserData
 
-sealed class CurrentUserState {
-    class NotAuthorized : CurrentUserState()
-    class Loading : CurrentUserState()
-    class Loaded(val user: UserData) : CurrentUserState()
+sealed class MyUserState {
+    class NotAuthorized : MyUserState()
+    class Loading : MyUserState()
+    class Loaded(val user: UserData) : MyUserState()
 
-    sealed class LoadingError : CurrentUserState() {
+    sealed class LoadingError : MyUserState() {
         class Disconnected : LoadingError()
         class ServiceUnavailable : LoadingError()
         class PermissionDenied : LoadingError()

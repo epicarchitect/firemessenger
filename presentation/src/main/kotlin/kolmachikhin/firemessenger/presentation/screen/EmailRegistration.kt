@@ -11,8 +11,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -24,12 +27,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import kolmachikhin.firemessenger.presentation.R
+import kolmachikhin.alexander.validation.Incorrect
 import kolmachikhin.firemessenger.auth.EmailRegistrationResult
-import kolmachikhin.firemessenger.validation.*
+import kolmachikhin.firemessenger.presentation.R
 import kolmachikhin.firemessenger.presentation.viewmodel.auth.EmailRegistrationState
 import kolmachikhin.firemessenger.validation.EmailValidator
-import kolmachikhin.firemessenger.validation.Incorrect
 import kolmachikhin.firemessenger.validation.NicknameValidator
 import kolmachikhin.firemessenger.validation.PasswordValidator
 

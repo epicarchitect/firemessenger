@@ -3,9 +3,9 @@ package kolmachikhin.firemessenger.firebaseapp.auth
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.firemessenger.auth.EmailAuthorizationResult
 import kolmachikhin.firemessenger.auth.EmailAuthorizer
-import kolmachikhin.firemessenger.validation.Correct
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 

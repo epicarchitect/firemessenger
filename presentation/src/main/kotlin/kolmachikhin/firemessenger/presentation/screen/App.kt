@@ -6,18 +6,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import kolmachikhin.firemessenger.presentation.R
 import kolmachikhin.firemessenger.presentation.di.composeViewModel
 import kolmachikhin.firemessenger.presentation.viewmodel.app.AppState
 import kolmachikhin.firemessenger.presentation.viewmodel.auth.EmailAuthorizationViewModel
 import kolmachikhin.firemessenger.presentation.viewmodel.auth.EmailRegistrationViewModel
 import kolmachikhin.firemessenger.presentation.viewmodel.chats.ChatsViewModel
+import kolmachikhin.firemessenger.presentation.viewmodel.profile.MyProfileViewModel
 import kolmachikhin.firemessenger.presentation.viewmodel.profile.ProfileViewModel
 import kolmachikhin.firemessenger.presentation.viewmodel.search.SearchViewModel
-import kolmachikhin.firemessenger.repository.CurrentUserState
+import kolmachikhin.firemessenger.repository.MyUserState
 
 @Composable
 fun App(state: AppState) {
@@ -25,9 +28,9 @@ fun App(state: AppState) {
 
     NavHost(
         navController = navController,
-        startDestination = when (state.currentUserState) {
-            is CurrentUserState.Loaded -> "chats"
-            is CurrentUserState.NotAuthorized -> "authorization"
+        startDestination = when (state.myUserState) {
+            is MyUserState.Loaded -> "chats"
+            is MyUserState.NotAuthorized -> "authorization"
             else -> "loading"
         }
     ) {
@@ -36,7 +39,7 @@ fun App(state: AppState) {
             Chats(
                 state = state,
                 navigateToProfile = {
-                    navController.navigate("profile")
+                    navController.navigate("my_profile")
                 },
                 navigateToSearch = {
                     navController.navigate("search")
@@ -44,9 +47,20 @@ fun App(state: AppState) {
             )
         }
 
-        composable("profile") {
-            val state by composeViewModel<ProfileViewModel>().state.collectAsState()
-            Profile(state)
+        composable("my_profile") {
+            val state by composeViewModel<MyProfileViewModel>().state.collectAsState()
+            MyProfile(state)
+        }
+
+        composable("profile?userId={userId}") {
+            val userId = it.arguments!!.getString("userId")
+            val state by composeViewModel<ProfileViewModel>(userId).state.collectAsState()
+            Profile(
+                state = state,
+                openChat = {
+
+                }
+            )
         }
 
         composable("loading") {
@@ -55,7 +69,12 @@ fun App(state: AppState) {
 
         composable("search") {
             val state by composeViewModel<SearchViewModel>().state.collectAsState()
-            Search(state)
+            Search(
+                state = state,
+                onSelected = {
+                    navController.navigate("profile?userId=${it.id}")
+                }
+            )
         }
 
         composable("authorization") {

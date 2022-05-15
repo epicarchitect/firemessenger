@@ -18,14 +18,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kolmachikhin.firemessenger.presentation.R
-import kolmachikhin.firemessenger.presentation.viewmodel.profile.ProfileState
+import kolmachikhin.firemessenger.presentation.viewmodel.profile.MyProfileState
 
 @Composable
-fun Profile(state: ProfileState, openChat: () -> Unit) {
+fun MyProfile(state: MyProfileState) {
     val focusManager = LocalFocusManager.current
 
     when (state) {
-        is ProfileState.Loaded -> {
+        is MyProfileState.Loaded -> {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -86,14 +86,14 @@ fun Profile(state: ProfileState, openChat: () -> Unit) {
                         .fillMaxWidth()
                         .padding(top = 54.dp),
                     onClick = {
-                        openChat()
+                        state.signOut()
                     }
                 ) {
-                    Text(stringResource(R.string.open_chat))
+                    Text(text = stringResource(R.string.sign_out))
                 }
             }
         }
-        is ProfileState.Loading -> {
+        is MyProfileState.Loading -> {
             Loading(stringResource(R.string.loading))
         }
     }

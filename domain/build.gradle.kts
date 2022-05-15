@@ -9,5 +9,7 @@ java {
 }
 
 dependencies {
+    api("com.github.alexander-kolmachikhin:validation:1.0.0")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }

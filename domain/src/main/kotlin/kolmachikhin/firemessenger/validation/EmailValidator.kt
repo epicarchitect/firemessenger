@@ -1,15 +1,13 @@
 package kolmachikhin.firemessenger.validation
 
-class EmailValidator {
+import kolmachikhin.alexander.validation.Validator
 
-    fun validate(value: String) = when {
-        value.isEmpty() -> {
-            Incorrect(value, IncorrectReason.Empty())
-        }
-        !value.matches(EMAIL_REGEX) -> {
-            Incorrect(value, IncorrectReason.Pattern())
-        }
-        else -> Correct(value)
+class EmailValidator : Validator<String, EmailValidator.IncorrectReason>() {
+
+    override suspend fun String.incorrectReason() = when {
+        isEmpty() -> IncorrectReason.Empty()
+        !matches(EMAIL_REGEX) -> IncorrectReason.Pattern()
+        else -> null
     }
 
     sealed class IncorrectReason {

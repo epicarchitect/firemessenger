@@ -27,4 +27,5 @@
     <string name="last_name">Фамилия</string>
     <string name="email">E-mail</string>
     <string name="sign_out">Выйти из аккаунта</string>
+    <string name="open_chat">Открыть чат</string>
 </resources>

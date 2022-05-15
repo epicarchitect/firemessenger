@@ -5,11 +5,11 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.firemessenger.auth.EmailRegistrar
 import kolmachikhin.firemessenger.auth.EmailRegistrationResult
 import kolmachikhin.firemessenger.data.UserData
 import kolmachikhin.firemessenger.firebaseapp.mapper.toMap
-import kolmachikhin.firemessenger.validation.Correct
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
